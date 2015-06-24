@@ -58,10 +58,10 @@ module.exports = function(grunt) {
     },
     shell: {
       gobuild: {
-        command: 'cd server && go build -o ../restless'
+        command: 'cd server && go build -o ../bin/restless'
       },
       start: {
-        command: 'echo ./restless | at now'
+        command: 'echo ./bin/restless | at now'
       },
       stop: {
         command: 'killall restless || true'

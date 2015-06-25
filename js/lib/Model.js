@@ -1,15 +1,18 @@
-var Model = {
-  __uid: '',
-  __rev: 0,
-  __data: {},
-  __schema: '',
+class Model {
 
-  initFromData: function(data){
+  constructor(){
+    this.__uid = '';
+    this.__rev = 0;
+    this.__data = {};
+    this.__schema = '';
+  }
+
+  initFromData(data){
     this.__data = data;
     return this;
-  },
+  }
 
-  initFromUID: function(uid){
+  initFromUID(uid){
     if(typeof this._preInit === 'function'){
       this._preInit();
     }
@@ -20,9 +23,9 @@ var Model = {
       this._postInit();
     }
     return this;
-  },
+  }
 
-  remove: function(){
+  remove(){
     var res = false;
     if(typeof this._preRemove === 'function'){
       this._preRemove();
@@ -34,9 +37,9 @@ var Model = {
       this._postRemove();
     }
     return res;
-  },
+  }
 
-  commit: function(){
+  commit(){
     var res = false;
     if(typeof this._preCommit === 'function'){
       this._preCommit();
@@ -49,4 +52,4 @@ var Model = {
     }
     return res;
   }
-};
+}

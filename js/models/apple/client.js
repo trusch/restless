@@ -2,25 +2,29 @@
 /*global CommonApple*/
 /*global InstanceBuilder*/
 
-var Apple = {
-  _preInit: function(){
+class AppleDef {
+  _preInit(){
     console.log('preInit');
-  },
-  _preRemove: function(){
+  }
+  _preRemove(){
     console.log('preRemove');
-  },
-  _preCommit: function(){
+  }
+  _preCommit(){
     console.log('preCommit');
-  },
-  _postInit: function(){
+  }
+  _postInit(){
     console.log('postInit');
-  },
-  _postRemove: function(){
+  }
+  _postRemove(){
     console.log('postRemove');
-  },
-  _postCommit: function(){
+  }
+  _postCommit(){
     console.log('postCommit');
   }
-};
+}
 
-Apple = InstanceBuilder.extend(ClientModel, CommonApple, Apple);
+class Apple extends aggregation(ClientModel, CommonApple, AppleDef) {
+  constructor(){
+    super();
+  }
+}

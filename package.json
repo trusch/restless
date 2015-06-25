@@ -5,9 +5,10 @@
   "dependencies": {},
   "devDependencies": {
     "grunt": "*",
-    "grunt-contrib-watch": "*",
+    "grunt-babel": "*",
+    "grunt-contrib-concat": "^0.5.1",
     "grunt-contrib-jshint": "*",
-    "grunt-contrib-concat": "*",
+    "grunt-contrib-watch": "*",
     "grunt-shell": "*"
   }
 }

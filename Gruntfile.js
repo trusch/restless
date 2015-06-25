@@ -15,6 +15,7 @@ module.exports = function(grunt) {
       },
       clientjs: {
         src: [
+           'js/lib/Aggregation.js',
            'js/lib/Model.js',
            'js/lib/InstanceBuilder.js',
            'js/lib/ClientModel.js',
@@ -25,12 +26,27 @@ module.exports = function(grunt) {
       },
       serverjs: {
         src: [
+           'js/lib/Aggregation.js',
            'js/lib/Model.js',
            'js/lib/InstanceBuilder.js',
            'js/lib/ServerModel.js',
            'js/models/**/common.js',
            'js/models/**/server.js'
         ],
+        dest: 'bin/server.js'
+      }
+    },
+    babel: {
+      options: {
+        sourceMaps: true,
+        comments: false
+      },
+      clientjs: {
+        src: 'bin/assets/client.js',
+        dest: 'bin/assets/client.js'
+      },
+      serverjs: {
+        src: 'bin/server.js',
         dest: 'bin/server.js'
       }
     },
@@ -73,10 +89,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-shell');
+  grunt.loadNpmTasks('grunt-babel');
 
 
   grunt.registerTask('start',['shell:stop','shell:start']);
-  grunt.registerTask('buildjs',['concat:clientjs','concat:serverjs']);
+  grunt.registerTask('buildjs',['concat:clientjs','concat:serverjs','babel:clientjs','babel:serverjs']);
   grunt.registerTask('buildgo',['shell:gobuild']);
   grunt.registerTask('build',['buildgo','buildjs','start']);
   grunt.registerTask('default', ['build','watch']);

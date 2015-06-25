@@ -1,17 +1,22 @@
 /*global InstanceBuilder*/
 /*global Model*/
 
-var ClientModel = {
-  _doInit: function(uid){
+class ClientModel extends Model {
+  constructor(){
+    super();
+  }
+
+  _doInit(uid){
     console.log('ClientModel: init');
-  },
-  _doRemove: function(){
+  }
+
+  _doRemove(){
     console.log('ClientModel: remove');
-  },
-  _doCommit: function(){
+  }
+  
+  _doCommit(){
     console.log('ClientModel: commit');
   }
-};
+}
 
-ClientModel = InstanceBuilder.extend(Model,ClientModel);
 

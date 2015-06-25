@@ -1,9 +1,10 @@
 /*global ClientModel*/
 
-var CommonApple = {
-  __name: 'apple',
-
-  myCommonFunction: function(){
+class CommonApple {
+  initializer(){
+    this.__name = 'apple';
+  }
+  myCommonFunction(){
     return 'foobar';
   }
-};
+}

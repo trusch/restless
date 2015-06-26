@@ -19,7 +19,6 @@ class ServerModel extends Model {
   _doCommit(){
     let key = this.__name+":"+this.__uid;
     let value = JSON.stringify(this.__data);
-    console.log("_doCommit: ",key,value);
     return db.put(key,value);
   }
 }

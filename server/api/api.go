@@ -19,7 +19,7 @@ func buildGetOneHandler(modelName string, jsEngine *otto.Otto) func(w http.Respo
 		id := vars["id"]
 		code := fmt.Sprintf(`
       var instance = app.CreateModel('%v');
-      instance.initFromUID(%v);
+      instance.initFromUID('%v');
       JSON.stringify(instance.__data);
     `, modelName, id)
 		val, err := jsEngine.Run(code)
@@ -37,14 +37,13 @@ func buildGetOneHandler(modelName string, jsEngine *otto.Otto) func(w http.Respo
 
 func buildPutOneHandler(modelName string, jsEngine *otto.Otto) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		log.Println("in put one")
 		vars := mux.Vars(r)
 		id := vars["id"]
 		data, _ := ioutil.ReadAll(r.Body)
 		code := fmt.Sprintf(`
       var instance = app.CreateModel('%v');
       instance.initFromData(JSON.parse('%v'));
-      instance.__uid = %v;
+      instance.__uid = '%v';
       instance.commit();
     `, modelName, string(data), id)
 		val, err := jsEngine.Run(code)
@@ -61,14 +60,36 @@ func buildPutOneHandler(modelName string, jsEngine *otto.Otto) func(w http.Respo
 	}
 }
 
+func buildPostHandler(modelName string, jsEngine *otto.Otto) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		data, _ := ioutil.ReadAll(r.Body)
+		code := fmt.Sprintf(`
+      var instance = app.CreateModel('%v');
+      instance.initFromData(JSON.parse('%v'));
+      instance.commit();
+      instance.__uid;
+    `, modelName, string(data))
+		val, err := jsEngine.Run(code)
+		if err != nil {
+			log.Println("Error in js:", err.Error())
+			log.Println(code)
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(fmt.Sprintf("Error in js: %v", err.Error())))
+			return
+		}
+		str := val.String()
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(str))
+	}
+}
+
 func buildDeleteOneHandler(modelName string, jsEngine *otto.Otto) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		log.Println("in delete one")
 		vars := mux.Vars(r)
 		id := vars["id"]
 		code := fmt.Sprintf(`
-      var instance = new %v();
-      instance.initFromUID(%v);
+      var instance = app.CreateModel('%v');
+      instance.initFromUID('%v');
       if(!instance.__data){
         false;
       }else{
@@ -116,8 +137,10 @@ func buildGetAllHandler(modelName string, db *leveldb.DB) func(w http.ResponseWr
 
 func BuildEndpoint(route *mux.Route, modelName string, jsEngine *otto.Otto, db *leveldb.DB) {
 	router := route.Subrouter()
-	router.HandleFunc("/{id:[0-9]+}", buildGetOneHandler(modelName, jsEngine)).Methods("GET")
-	router.HandleFunc("/{id:[0-9]+}", buildPutOneHandler(modelName, jsEngine)).Methods("POST")
-	router.HandleFunc("/{id:[0-9]+}", buildDeleteOneHandler(modelName, jsEngine)).Methods("DELETE")
+	router.StrictSlash(true)
+	router.HandleFunc("/{id:.+}", buildGetOneHandler(modelName, jsEngine)).Methods("GET")
+	router.HandleFunc("/{id:.+}", buildPutOneHandler(modelName, jsEngine)).Methods("PUT")
+	router.HandleFunc("/{id:.+}", buildDeleteOneHandler(modelName, jsEngine)).Methods("DELETE")
 	router.HandleFunc("/", buildGetAllHandler(modelName, db)).Methods("GET")
+	router.HandleFunc("/", buildPostHandler(modelName, jsEngine)).Methods("POST")
 }

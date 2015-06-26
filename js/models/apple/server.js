@@ -1,27 +1,25 @@
-
-()=>{
-  let orig = console.log;
-  console.log = (...args) => orig('ServerJS>', ...args);
-}()
-
+/**
+ * Apple Model: A simple model example
+ */
 app.Model('Apple', CommonApple, class {
-  onPreInit(){
-    console.log('preInit');
-  }
-  onPreRemove(){
-    console.log('preRemove');
-  }
-  onPreCommit(){
-    console.log('preCommit');
-  }
+  
+  //onPreInit(){}
   onPostInit(){
-    console.log('postInit');
+    this.set('example.dynamic.requestTime',(new Date()).toString());
   }
+
+  //onPreRemove(){}
   onPostRemove(){
-    console.log('postRemove');
+    console.debug(`deleted instance ${this.__uid} of model ${this.__name}`);
+  }
+
+  onPreCommit(){
+    this.set('lastModified',Date.now());
   }
   onPostCommit(){
-    console.log('postCommit');
+    console.debug(`commited instance ${this.__uid} of model ${this.__name}`);
   }
+  
+  
 });
 

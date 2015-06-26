@@ -1,8 +1,19 @@
 class ClientApp {
     constructor(){
         this.__models = {};
+        this.__debugLogs = true;
+        this._initDebugLogs();
     }
 
+    _initDebugLogs(){
+        let orig = console.log;
+        console.log = (...args) => orig('ClientJS>', ...args);
+        if(this.__debugLogs){
+            console.debug = (...args) => console.log(...args);
+        }else{
+            console.debug = (...args) => {};
+        }
+    }
     Model(name, ...mixins){
         console.log(`declare server model ${name}...`);
         this.__models[name] = aggregation(ServerModel, ...mixins);

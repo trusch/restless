@@ -1,22 +1,24 @@
-
+/**
+ * Apple Model: A simple model example
+ */
 app.Model('Apple', CommonApple, class {
   onPreInit(){
-    console.log('preInit');
+    console.debug('preInit');
   }
   onPreRemove(){
-    console.log('preRemove');
+    console.debug('preRemove');
   }
   onPreCommit(){
-    console.log('preCommit');
+    console.debug('preCommit');
   }
   onPostInit(){
-    console.log('postInit');
+    console.debug('postInit');
   }
   onPostRemove(){
-    console.log('postRemove');
+    console.debug('postRemove');
   }
   onPostCommit(){
-    console.log('postCommit');
+    console.debug('postCommit');
   }
 });
 

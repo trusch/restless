@@ -18,7 +18,7 @@ func buildGetOneHandler(modelName string, jsEngine *otto.Otto) func(w http.Respo
 		vars := mux.Vars(r)
 		id := vars["id"]
 		code := fmt.Sprintf(`
-      var instance = new %v();
+      var instance = app.CreateModel('%v');
       instance.initFromUID(%v);
       JSON.stringify(instance.__data);
     `, modelName, id)
@@ -42,7 +42,7 @@ func buildPutOneHandler(modelName string, jsEngine *otto.Otto) func(w http.Respo
 		id := vars["id"]
 		data, _ := ioutil.ReadAll(r.Body)
 		code := fmt.Sprintf(`
-      var instance = new %v();
+      var instance = app.CreateModel('%v');
       instance.initFromData(JSON.parse('%v'));
       instance.__uid = %v;
       instance.commit();
@@ -91,9 +91,8 @@ func buildDeleteOneHandler(modelName string, jsEngine *otto.Otto) func(w http.Re
 
 func buildGetAllHandler(modelName string, db *leveldb.DB) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		log.Println("in get all")
 		keys := []string{}
-		prefix := strings.ToLower(modelName) + ":"
+		prefix := modelName + ":"
 		iter := db.NewIterator(util.BytesPrefix([]byte(prefix)), nil)
 		for iter.Next() {
 			keys = append(keys, strings.TrimPrefix(string(iter.Key()), prefix))

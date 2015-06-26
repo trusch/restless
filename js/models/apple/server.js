@@ -1,25 +1,27 @@
-/*global ServerModel*/
-/*global CommonApple*/
 
-class AppleDef {
-  _preInit(){
+()=>{
+  let orig = console.log;
+  console.log = (...args) => orig('ServerJS>', ...args);
+}()
+
+app.Model('Apple', CommonApple, class {
+  onPreInit(){
     console.log('preInit');
   }
-  _preRemove(){
+  onPreRemove(){
     console.log('preRemove');
   }
-  _preCommit(){
+  onPreCommit(){
     console.log('preCommit');
   }
-  _postInit(){
+  onPostInit(){
     console.log('postInit');
   }
-  _postRemove(){
+  onPostRemove(){
     console.log('postRemove');
   }
-  _postCommit(){
+  onPostCommit(){
     console.log('postCommit');
   }
-};
+});
 
-class Apple extends aggregation(ServerModel, CommonApple, AppleDef) { }

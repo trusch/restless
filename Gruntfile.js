@@ -17,8 +17,8 @@ module.exports = function(grunt) {
         src: [
            'js/lib/Aggregation.js',
            'js/lib/Model.js',
-           'js/lib/InstanceBuilder.js',
            'js/lib/ClientModel.js',
+           'js/lib/ClientApp.js',
            'js/models/**/common.js',
            'js/models/**/client.js'
         ],
@@ -28,8 +28,8 @@ module.exports = function(grunt) {
         src: [
            'js/lib/Aggregation.js',
            'js/lib/Model.js',
-           'js/lib/InstanceBuilder.js',
            'js/lib/ServerModel.js',
+           'js/lib/ServerApp.js',
            'js/models/**/common.js',
            'js/models/**/server.js'
         ],

@@ -13,42 +13,42 @@ class Model {
   }
 
   initFromUID(uid){
-    if(typeof this._preInit === 'function'){
-      this._preInit();
+    if(typeof this.onPreInit === 'function'){
+      this.onPreInit();
     }
     if(typeof this._doInit === 'function'){
       this._doInit(uid); //impl by subclass
     }
-    if(typeof this._postInit === 'function'){
-      this._postInit();
+    if(typeof this.onPostInit === 'function'){
+      this.onPostInit();
     }
     return this;
   }
 
   remove(){
     var res = false;
-    if(typeof this._preRemove === 'function'){
-      this._preRemove();
+    if(typeof this.onPreRemove === 'function'){
+      this.onPreRemove();
     }
     if(typeof this._doRemove === 'function'){
       res = this._doRemove(); //impl by subclass
     }
-    if(typeof this._postRemove === 'function'){
-      this._postRemove();
+    if(typeof this.onPostRemove === 'function'){
+      this.onPostRemove();
     }
     return res;
   }
 
   commit(){
     var res = false;
-    if(typeof this._preCommit === 'function'){
-      this._preCommit();
+    if(typeof this.onPreCommit === 'function'){
+      this.onPreCommit();
     }
     if(typeof this._doCommit === 'function'){
       res = this._doCommit(); //impl by subclass
     }
-    if(typeof this._postCommit === 'function'){
-      this._postCommit();
+    if(typeof this.onPostCommit === 'function'){
+      this.onPostCommit();
     }
     return res;
   }

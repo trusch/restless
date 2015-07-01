@@ -13,6 +13,8 @@ type Config struct {
   Address string `json:"address"`
   DB string `json:"db"`
   Endpoints []Endpoint `json:"endpoints"`
+  CertFile string `json:"certfile"`
+  KeyFile string `json:"keyfile"`
 }
 
 type Endpoint struct {

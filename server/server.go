@@ -73,6 +73,11 @@ func main() {
 	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir(cfg.Assets))))
 	http.HandleFunc("/",dynamic.BuildHandler(jsEngine))
 
-	log.Println("starting server on", cfg.Address)
-	log.Fatal(http.ListenAndServe(cfg.Address, nil))
+	if(cfg.CertFile != "" && cfg.KeyFile != ""){
+		log.Println("starting TLS secured server on", cfg.Address)
+		log.Fatal(http.ListenAndServeTLS(cfg.Address, cfg.CertFile, cfg.KeyFile, nil))	
+	}else{
+		log.Println("starting server on", cfg.Address)
+		log.Fatal(http.ListenAndServe(cfg.Address, nil))
+	}
 }

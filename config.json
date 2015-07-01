@@ -8,5 +8,7 @@
       "url": "/apple",
       "model": "Apple"
     }
-  ]
+  ],
+  "certfile": "cert.pem",
+  "keyfile": "key.pem"
 }

@@ -56,4 +56,4 @@ class ServerApp {
 
 }
 
-var app  = new ServerApp();
+var restless  = new ServerApp();

@@ -6,7 +6,7 @@ class ServerModel extends Model {
     super();
   }
   
-  _doInit(uid){
+  _doGet(uid){
     this.__uid = uid;
     let raw = db.get(this.__name+":"+this.__uid);
     this.__data = JSON.parse(raw);
@@ -16,7 +16,7 @@ class ServerModel extends Model {
     return db.remove(this.__name+":"+this.__uid);
   }
   
-  _doCommit(){
+  _doPut(){
     let key = this.__name+":"+this.__uid;
     let value = JSON.stringify(this.__data);
     return db.put(key,value);

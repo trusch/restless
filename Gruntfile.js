@@ -6,7 +6,8 @@ module.exports = function(grunt) {
                        'js/lib/ServerModel.js',
                        'js/lib/ClientModel.js',
                        'js/models/**/*.js',
-                       'test/**/*.js'];
+                       'test/**/*.js',
+                       'js/pages/**/*.js'];
 
   grunt.initConfig({
     concat: {
@@ -31,7 +32,8 @@ module.exports = function(grunt) {
            'js/lib/ServerModel.js',
            'js/lib/ServerApp.js',
            'js/models/**/common.js',
-           'js/models/**/server.js'
+           'js/models/**/server.js',
+           'js/pages/**/*.js'
         ],
         dest: 'bin/server.js'
       }
@@ -95,7 +97,7 @@ module.exports = function(grunt) {
   grunt.registerTask('start',['shell:stop','shell:start']);
   grunt.registerTask('buildjs',['concat:clientjs','concat:serverjs','babel:clientjs','babel:serverjs']);
   grunt.registerTask('buildgo',['shell:gobuild']);
-  grunt.registerTask('build',['buildgo','buildjs','start']);
+  grunt.registerTask('build',['buildgo','buildjs']);
   grunt.registerTask('default', ['build','watch']);
 
 };

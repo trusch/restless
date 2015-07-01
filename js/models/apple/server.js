@@ -3,8 +3,10 @@
  */
 app.Model('Apple', CommonApple, class {
   
-  //onPreInit(){}
-  onPostInit(){
+  onPreGet(){
+    if(ROLE !== 'admin') throw 'no right!';
+  }
+  onPostGet(){
     this.set('example.dynamic.requestTime',(new Date()).toString());
   }
 
@@ -13,10 +15,10 @@ app.Model('Apple', CommonApple, class {
     console.debug(`deleted instance ${this.__uid} of model ${this.__name}`);
   }
 
-  onPreCommit(){
+  onPrePut(){
     this.set('lastModified',Date.now());
   }
-  onPostCommit(){
+  onPostPut(){
     console.debug(`commited instance ${this.__uid} of model ${this.__name}`);
   }
   

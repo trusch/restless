@@ -14,15 +14,15 @@ class Model {
     return this;
   }
 
-  initFromUID(uid){
-    if(typeof this.onPreInit === 'function'){
-      this.onPreInit();
+  getFromUID(uid){
+    if(typeof this.onPreGet === 'function'){
+      this.onPreGet();
     }
-    if(typeof this._doInit === 'function'){
-      this._doInit(uid); //impl by subclass
+    if(typeof this._doGet === 'function'){
+      this._doGet(uid); //impl by subclass
     }
-    if(typeof this.onPostInit === 'function'){
-      this.onPostInit();
+    if(typeof this.onPostGet === 'function'){
+      this.onPostGet();
     }
     return this;
   }
@@ -41,16 +41,16 @@ class Model {
     return res;
   }
 
-  commit(){
+  put(){
     var res = false;
-    if(typeof this.onPreCommit === 'function'){
-      this.onPreCommit();
+    if(typeof this.onPrePut === 'function'){
+      this.onPrePut();
     }
-    if(typeof this._doCommit === 'function'){
-      res = this._doCommit(); //impl by subclass
+    if(typeof this._doPut === 'function'){
+      res = this._doPut(); //impl by subclass
     }
-    if(typeof this.onPostCommit === 'function'){
-      this.onPostCommit();
+    if(typeof this.onPostPut === 'function'){
+      this.onPostPut();
     }
     return res;
   }

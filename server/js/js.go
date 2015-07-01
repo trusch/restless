@@ -4,10 +4,40 @@ import (
   "log"
   "github.com/robertkrimen/otto"
   "github.com/syndtr/goleveldb/leveldb"
+  "io/ioutil"
+  "net/http"
+  "encoding/json"
+  "fmt"
+  "../auth"
 )
 
 func CreateOtto() *otto.Otto {
     return otto.New();
+}
+
+func headerToJSON(headers http.Header) string {
+  b,err := json.Marshal(headers);
+  if err!=nil {
+    log.Println(err.Error())
+    return "";
+  }
+  return string(b)
+}
+
+func InjectRequestDetails(jsEngine *otto.Otto, w http.ResponseWriter, r *http.Request){
+    user := auth.GetUser(w,r)
+    bodydata,_ := ioutil.ReadAll(r.Body)
+
+    code := fmt.Sprintf(`
+      var URL = '%v';
+      var METHOD = '%v'
+      var HEADERS = JSON.parse('%v');
+      var USERNAME = '%v';
+      var ROLE = '%v'
+      var BODY = '%v'
+    `,r.URL.Path,r.Method,headerToJSON(r.Header),user.Username,user.Role,string(bodydata))
+
+    jsEngine.Run(code)
 }
 
 func InjectLevelDB(jsEngine *otto.Otto, db *leveldb.DB){

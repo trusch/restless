@@ -11,15 +11,17 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"../js"
 )
 
 func buildGetOneHandler(modelName string, jsEngine *otto.Otto) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		js.InjectRequestDetails(jsEngine,w,r)
 		vars := mux.Vars(r)
 		id := vars["id"]
 		code := fmt.Sprintf(`
       var instance = app.CreateModel('%v');
-      instance.initFromUID('%v');
+      instance.getFromUID('%v');
       JSON.stringify(instance.__data);
     `, modelName, id)
 		val, err := jsEngine.Run(code)
@@ -37,6 +39,7 @@ func buildGetOneHandler(modelName string, jsEngine *otto.Otto) func(w http.Respo
 
 func buildPutOneHandler(modelName string, jsEngine *otto.Otto) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		js.InjectRequestDetails(jsEngine,w,r)
 		vars := mux.Vars(r)
 		id := vars["id"]
 		data, _ := ioutil.ReadAll(r.Body)
@@ -44,7 +47,7 @@ func buildPutOneHandler(modelName string, jsEngine *otto.Otto) func(w http.Respo
       var instance = app.CreateModel('%v');
       instance.initFromData(JSON.parse('%v'));
       instance.__uid = '%v';
-      instance.commit();
+      instance.put();
     `, modelName, string(data), id)
 		val, err := jsEngine.Run(code)
 		if err != nil {
@@ -62,11 +65,12 @@ func buildPutOneHandler(modelName string, jsEngine *otto.Otto) func(w http.Respo
 
 func buildPostHandler(modelName string, jsEngine *otto.Otto) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		js.InjectRequestDetails(jsEngine,w,r)
 		data, _ := ioutil.ReadAll(r.Body)
 		code := fmt.Sprintf(`
       var instance = app.CreateModel('%v');
       instance.initFromData(JSON.parse('%v'));
-      instance.commit();
+      instance.put();
       instance.__uid;
     `, modelName, string(data))
 		val, err := jsEngine.Run(code)
@@ -85,11 +89,12 @@ func buildPostHandler(modelName string, jsEngine *otto.Otto) func(w http.Respons
 
 func buildDeleteOneHandler(modelName string, jsEngine *otto.Otto) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		js.InjectRequestDetails(jsEngine,w,r)
 		vars := mux.Vars(r)
 		id := vars["id"]
 		code := fmt.Sprintf(`
       var instance = app.CreateModel('%v');
-      instance.initFromUID('%v');
+      instance.getFromUID('%v');
       if(!instance.__data){
         false;
       }else{

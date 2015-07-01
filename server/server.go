@@ -12,6 +12,8 @@ import (
 	"./auth"
 	"./config"
 	"./js"
+	"./dynamic"
+	"./fs"
 )
 
 var jsEngine *otto.Otto = nil
@@ -28,11 +30,15 @@ func SetUpLevelDB(path string) {
 func SetUpOtto(codeFile string) {
 	jsEngine = js.CreateOtto()
 	js.InjectLevelDB(jsEngine, db)
+	fs.InjectIntoOtto(jsEngine)
 	backendCode, e := ioutil.ReadFile(codeFile)
 	if e != nil {
 		log.Fatal("Need " + codeFile)
 	}
-	jsEngine.Run(backendCode)
+	_,e= jsEngine.Run(backendCode)
+	if e != nil {
+		log.Fatal("Error in backenjs:" + e.Error())
+	}
 }
 
 func SetUpAPI(endpoints []config.Endpoint) *mux.Router {
@@ -65,7 +71,7 @@ func main() {
 	http.Handle("/api/", apiRouter)
 
 	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir(cfg.Assets))))
-	http.Handle("/", http.RedirectHandler("/assets/index.html", 301))
+	http.HandleFunc("/",dynamic.BuildHandler(jsEngine))
 
 	log.Println("starting server on", cfg.Address)
 	log.Fatal(http.ListenAndServe(cfg.Address, nil))

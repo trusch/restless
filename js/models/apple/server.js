@@ -10,12 +10,15 @@ app.Model('Apple', CommonApple, class {
     this.set('example.dynamic.requestTime',(new Date()).toString());
   }
 
-  //onPreRemove(){}
+  onPreRemove(){
+    if(ROLE !== 'admin') throw 'no right!';
+  }
   onPostRemove(){
     console.debug(`deleted instance ${this.__uid} of model ${this.__name}`);
   }
 
   onPrePut(){
+    if(ROLE !== 'admin') throw 'no right!';
     this.set('lastModified',Date.now());
   }
   onPostPut(){

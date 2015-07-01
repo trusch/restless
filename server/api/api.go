@@ -16,9 +16,9 @@ import (
 
 func buildGetOneHandler(modelName string, jsEngine *otto.Otto) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		js.InjectRequestDetails(jsEngine,w,r)
 		vars := mux.Vars(r)
 		id := vars["id"]
+		js.InjectRequestDetails(jsEngine,w,r)
 		code := fmt.Sprintf(`
       var instance = app.CreateModel('%v');
       instance.getFromUID('%v');
@@ -39,10 +39,10 @@ func buildGetOneHandler(modelName string, jsEngine *otto.Otto) func(w http.Respo
 
 func buildPutOneHandler(modelName string, jsEngine *otto.Otto) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		js.InjectRequestDetails(jsEngine,w,r)
 		vars := mux.Vars(r)
 		id := vars["id"]
 		data, _ := ioutil.ReadAll(r.Body)
+		js.InjectRequestDetails(jsEngine,w,r)
 		code := fmt.Sprintf(`
       var instance = app.CreateModel('%v');
       instance.initFromData(JSON.parse('%v'));
@@ -65,8 +65,11 @@ func buildPutOneHandler(modelName string, jsEngine *otto.Otto) func(w http.Respo
 
 func buildPostHandler(modelName string, jsEngine *otto.Otto) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		data, err := ioutil.ReadAll(r.Body)
+		if err!=nil {
+			log.Println(err)
+		}
 		js.InjectRequestDetails(jsEngine,w,r)
-		data, _ := ioutil.ReadAll(r.Body)
 		code := fmt.Sprintf(`
       var instance = app.CreateModel('%v');
       instance.initFromData(JSON.parse('%v'));
@@ -89,9 +92,9 @@ func buildPostHandler(modelName string, jsEngine *otto.Otto) func(w http.Respons
 
 func buildDeleteOneHandler(modelName string, jsEngine *otto.Otto) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		js.InjectRequestDetails(jsEngine,w,r)
 		vars := mux.Vars(r)
 		id := vars["id"]
+		js.InjectRequestDetails(jsEngine,w,r)
 		code := fmt.Sprintf(`
       var instance = app.CreateModel('%v');
       instance.getFromUID('%v');

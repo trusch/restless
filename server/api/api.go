@@ -20,7 +20,7 @@ func buildGetOneHandler(modelName string, jsEngine *otto.Otto) func(w http.Respo
 		id := vars["id"]
 		js.InjectRequestDetails(jsEngine,w,r)
 		code := fmt.Sprintf(`
-      var instance = app.CreateModel('%v');
+      var instance = restless.CreateModel('%v');
       instance.getFromUID('%v');
       JSON.stringify(instance.__data);
     `, modelName, id)
@@ -44,7 +44,7 @@ func buildPutOneHandler(modelName string, jsEngine *otto.Otto) func(w http.Respo
 		data, _ := ioutil.ReadAll(r.Body)
 		js.InjectRequestDetails(jsEngine,w,r)
 		code := fmt.Sprintf(`
-      var instance = app.CreateModel('%v');
+      var instance = restless.CreateModel('%v');
       instance.initFromData(JSON.parse('%v'));
       instance.__uid = '%v';
       instance.put();
@@ -71,7 +71,7 @@ func buildPostHandler(modelName string, jsEngine *otto.Otto) func(w http.Respons
 		}
 		js.InjectRequestDetails(jsEngine,w,r)
 		code := fmt.Sprintf(`
-      var instance = app.CreateModel('%v');
+      var instance = restless.CreateModel('%v');
       instance.initFromData(JSON.parse('%v'));
       instance.put();
       instance.__uid;
@@ -96,7 +96,7 @@ func buildDeleteOneHandler(modelName string, jsEngine *otto.Otto) func(w http.Re
 		id := vars["id"]
 		js.InjectRequestDetails(jsEngine,w,r)
 		code := fmt.Sprintf(`
-      var instance = app.CreateModel('%v');
+      var instance = restless.CreateModel('%v');
       instance.getFromUID('%v');
       if(!instance.__data){
         false;

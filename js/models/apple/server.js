@@ -1,7 +1,7 @@
 /**
  * Apple Model: A simple model example
  */
-app.Model('Apple', CommonApple, class {
+restless.Model('Apple', CommonApple, class {
   
   onPreGet(){
     if(ROLE !== 'admin') throw 'no right!';

@@ -45,7 +45,7 @@ func BuildHandler(jsEngine *otto.Otto) func(w http.ResponseWriter, r *http.Reque
     }
 
     js.InjectRequestDetails(jsEngine,w,r)
-    code := "app.renderPage();"
+    code := "restless.renderPage();"
     val, err := jsEngine.Run(code)
     if err!=nil {
       errHandler(err)
@@ -53,7 +53,7 @@ func BuildHandler(jsEngine *otto.Otto) func(w http.ResponseWriter, r *http.Reque
     }
     obj := val.Object()
     if obj == nil {
-      errHandler(errors.New("app.renderPage() did not return an object"))
+      errHandler(errors.New("restless.renderPage() did not return an object"))
       return
     }
     bodyVal,err := obj.Get("body")

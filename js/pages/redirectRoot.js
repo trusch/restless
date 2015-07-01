@@ -1,4 +1,4 @@
-app.Page('^/$', ()=>{
+restless.Page('^/$', ()=>{
     return {
         status: 301,
         header: {

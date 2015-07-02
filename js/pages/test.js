@@ -4,7 +4,8 @@ restless.Page('^/test$', ()=>{
     apple.getFromUID('27fdd834-d15c-46b6-af0c-606ed0a58d01')
 
     return {
-        body: `Url: ${URL}
+        body: `
+Url: ${URL}
 Method: ${METHOD}
 Headers: ${JSON.stringify(HEADERS)}
 User: ${USERNAME}
@@ -15,4 +16,3 @@ Apple: ${JSON.stringify(apple)}
 `
     }
 })
-

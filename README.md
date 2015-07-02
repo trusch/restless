@@ -15,7 +15,7 @@ For example you have the endpoint 'article'. If you POST a request with any JSON
 
 Lets have a look how these hooks could look like:
 
-	app.Model('Article', class {
+	restless.Model('Article', class {
 		onPreInit(){
 			console.debug(`onPreInit of instance ${this.__uid} of model ${this.__name}`);
 		}

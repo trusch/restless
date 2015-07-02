@@ -37,7 +37,7 @@ func SetUpOtto(codeFile string) {
 	}
 	_,e= jsEngine.Run(backendCode)
 	if e != nil {
-		log.Fatal("Error in backenjs:" + e.Error())
+		log.Fatal("Error in backendjs:" + e.Error())
 	}
 }
 

@@ -10,10 +10,11 @@ import (
 	"./api"
 	"./auth"
 	"./config"
-	"./js"
 	"./dynamic"
-	"./fs"
 	"./events"
+	"./fs"
+	"./js"
+	"./websocket"
 )
 
 var jsEngine *js.JSEngine = nil
@@ -33,12 +34,12 @@ func SetUpOtto(codeFile string) {
 	eventManager = events.NewEventManager()
 	js.InjectLevelDB(jsEngine, db)
 	fs.InjectIntoOtto(jsEngine)
-	events.InjectIntoOtto(jsEngine,eventManager)
+	events.InjectIntoOtto(jsEngine, eventManager)
 	backendCode, e := ioutil.ReadFile(codeFile)
 	if e != nil {
 		log.Fatal("Need " + codeFile)
 	}
-	_,e= jsEngine.Run(string(backendCode))
+	_, e = jsEngine.Run(string(backendCode))
 	if e != nil {
 		log.Fatal("Error in backendjs:" + e.Error())
 	}
@@ -62,6 +63,8 @@ func main() {
 	SetUpLevelDB(cfg.DB)
 	SetUpOtto(cfg.JSBase)
 
+	websocket.Setup(eventManager)
+
 	authRouter := auth.SetupAuth("passwords.gob")
 	err := auth.AddUser("root", "root@localhost", "toor", "admin")
 	if err != nil {
@@ -74,12 +77,12 @@ func main() {
 	http.Handle("/api/", apiRouter)
 
 	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir(cfg.Assets))))
-	http.HandleFunc("/",dynamic.BuildHandler(jsEngine))
+	http.HandleFunc("/", dynamic.BuildHandler(jsEngine))
 
-	if(cfg.CertFile != "" && cfg.KeyFile != ""){
+	if cfg.CertFile != "" && cfg.KeyFile != "" {
 		log.Println("starting TLS secured server on", cfg.Address)
-		log.Fatal(http.ListenAndServeTLS(cfg.Address, cfg.CertFile, cfg.KeyFile, nil))	
-	}else{
+		log.Fatal(http.ListenAndServeTLS(cfg.Address, cfg.CertFile, cfg.KeyFile, nil))
+	} else {
 		log.Println("starting server on", cfg.Address)
 		log.Fatal(http.ListenAndServe(cfg.Address, nil))
 	}

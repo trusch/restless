@@ -1,6 +1,7 @@
 package api
 
 import (
+	"../js"
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
@@ -10,14 +11,13 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"../js"
 )
 
 func buildGetOneHandler(modelName string, jsEngine *js.JSEngine) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		id := vars["id"]
-		js.InjectRequestDetails(jsEngine,w,r)
+		js.InjectRequestDetails(jsEngine, w, r)
 		code := fmt.Sprintf(`
       var instance = restless.CreateModel('%v');
       instance.getFromUID('%v');
@@ -41,7 +41,7 @@ func buildPutOneHandler(modelName string, jsEngine *js.JSEngine) func(w http.Res
 		vars := mux.Vars(r)
 		id := vars["id"]
 		data, _ := ioutil.ReadAll(r.Body)
-		js.InjectRequestDetails(jsEngine,w,r)
+		js.InjectRequestDetails(jsEngine, w, r)
 		code := fmt.Sprintf(`
       var instance = restless.CreateModel('%v');
       instance.initFromData(JSON.parse('%v'));
@@ -65,10 +65,10 @@ func buildPutOneHandler(modelName string, jsEngine *js.JSEngine) func(w http.Res
 func buildPostHandler(modelName string, jsEngine *js.JSEngine) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		data, err := ioutil.ReadAll(r.Body)
-		if err!=nil {
+		if err != nil {
 			log.Println(err)
 		}
-		js.InjectRequestDetails(jsEngine,w,r)
+		js.InjectRequestDetails(jsEngine, w, r)
 		code := fmt.Sprintf(`
       var instance = restless.CreateModel('%v');
       instance.initFromData(JSON.parse('%v'));
@@ -93,7 +93,7 @@ func buildDeleteOneHandler(modelName string, jsEngine *js.JSEngine) func(w http.
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		id := vars["id"]
-		js.InjectRequestDetails(jsEngine,w,r)
+		js.InjectRequestDetails(jsEngine, w, r)
 		code := fmt.Sprintf(`
       var instance = restless.CreateModel('%v');
       instance.getFromUID('%v');

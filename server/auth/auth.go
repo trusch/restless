@@ -60,11 +60,11 @@ func AddUser(name, email, password, role string) error {
 }
 
 func GetUser(rw http.ResponseWriter, req *http.Request) httpauth.UserData {
-	user,err := aaa.CurrentUser(rw, req)
-	if err!=nil {
+	user, err := aaa.CurrentUser(rw, req)
+	if err != nil {
 		user = httpauth.UserData{
 			Username: "anonymous",
-			Role: "guest",
+			Role:     "guest",
 		}
 	}
 	return user
@@ -78,7 +78,7 @@ func handleLogin(rw http.ResponseWriter, req *http.Request) {
 	log.Println("login!")
 	username := req.PostFormValue("username")
 	password := req.PostFormValue("password")
-	log.Println("auth: "+username+" "+password)
+	log.Println("auth: " + username + " " + password)
 	if err := aaa.Login(rw, req, username, password, "/"); err != nil && err.Error() == "already authenticated" {
 		http.Redirect(rw, req, "/", http.StatusSeeOther)
 	} else if err != nil {

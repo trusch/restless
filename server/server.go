@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/robertkrimen/otto"
 	"github.com/syndtr/goleveldb/leveldb"
 	"io/ioutil"
 	"log"
@@ -14,10 +13,12 @@ import (
 	"./js"
 	"./dynamic"
 	"./fs"
+	"./events"
 )
 
-var jsEngine *otto.Otto = nil
+var jsEngine *js.JSEngine = nil
 var db *leveldb.DB = nil
+var eventManager *events.EventManager = nil
 
 func SetUpLevelDB(path string) {
 	db_, err := leveldb.OpenFile(path, nil)
@@ -29,13 +30,15 @@ func SetUpLevelDB(path string) {
 
 func SetUpOtto(codeFile string) {
 	jsEngine = js.CreateOtto()
+	eventManager = events.NewEventManager()
 	js.InjectLevelDB(jsEngine, db)
 	fs.InjectIntoOtto(jsEngine)
+	events.InjectIntoOtto(jsEngine,eventManager)
 	backendCode, e := ioutil.ReadFile(codeFile)
 	if e != nil {
 		log.Fatal("Need " + codeFile)
 	}
-	_,e= jsEngine.Run(backendCode)
+	_,e= jsEngine.Run(string(backendCode))
 	if e != nil {
 		log.Fatal("Error in backendjs:" + e.Error())
 	}

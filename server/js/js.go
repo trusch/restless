@@ -9,10 +9,47 @@ import (
   "encoding/json"
   "fmt"
   "../auth"
+  "sync"
 )
 
-func CreateOtto() *otto.Otto {
-    return otto.New();
+type JSEngine struct {
+  mutex sync.Mutex
+  otto *otto.Otto
+}
+
+func (ptr *JSEngine) Run(code string) (otto.Value, error){
+    ptr.mutex.Lock()
+    val,err := ptr.otto.Run(code)
+    ptr.mutex.Unlock()
+    return val,err
+}
+
+func (ptr *JSEngine) Set(name string, value interface{}) error {
+    ptr.mutex.Lock()
+    err := ptr.otto.Set(name,value)
+    ptr.mutex.Unlock()
+    return err
+}
+
+func (ptr *JSEngine) Get(name string) (otto.Value, error){
+    ptr.mutex.Lock()
+    val,err := ptr.otto.Get(name)
+    ptr.mutex.Unlock()
+    return val,err
+}
+
+func (ptr *JSEngine) Lock(){
+  ptr.mutex.Lock()
+}
+
+func (ptr *JSEngine) Unlock(){
+  ptr.mutex.Unlock()
+}
+
+func CreateOtto() *JSEngine {
+    engine := new(JSEngine)
+    engine.otto = otto.New()
+    return engine;
 }
 
 func headerToJSON(headers http.Header) string {
@@ -24,7 +61,7 @@ func headerToJSON(headers http.Header) string {
   return string(b)
 }
 
-func InjectRequestDetails(jsEngine *otto.Otto, w http.ResponseWriter, r *http.Request){
+func InjectRequestDetails(jsEngine *JSEngine, w http.ResponseWriter, r *http.Request){
     user := auth.GetUser(w,r)
     bodydata,_ := ioutil.ReadAll(r.Body)
 
@@ -40,7 +77,7 @@ func InjectRequestDetails(jsEngine *otto.Otto, w http.ResponseWriter, r *http.Re
     jsEngine.Run(code)
 }
 
-func InjectLevelDB(jsEngine *otto.Otto, db *leveldb.DB){
+func InjectLevelDB(jsEngine *JSEngine, db *leveldb.DB){
   jsEngine.Run("var db = {};")
   dbValue,_ := jsEngine.Get("db")
   dbObj := dbValue.Object()

@@ -1,12 +1,13 @@
 package dynamic
 
 import (
-  "github.com/robertkrimen/otto"
   "net/http"
   "fmt"
   "log"
   "errors"
   "encoding/json"
+  "github.com/robertkrimen/otto"
+
   "../js"
 )
 
@@ -37,7 +38,7 @@ func objToHeader(data *otto.Value, header http.Header) {
   }
 }
 
-func BuildHandler(jsEngine *otto.Otto) func(w http.ResponseWriter, r *http.Request) {
+func BuildHandler(jsEngine *js.JSEngine) func(w http.ResponseWriter, r *http.Request) {
   return func(w http.ResponseWriter, r *http.Request) {
     errHandler := func(err error){
       w.WriteHeader(http.StatusInternalServerError)

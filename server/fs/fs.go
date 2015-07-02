@@ -2,11 +2,12 @@ package fs
 
 import (
     "github.com/robertkrimen/otto"
+    "../js"
     "io/ioutil"
     "log"
 )
 
-func InjectIntoOtto(jsEngine *otto.Otto){
+func InjectIntoOtto(jsEngine *js.JSEngine){
       jsEngine.Run("var fs = {};")
       fsValue,_ := jsEngine.Get("fs")
       fsObj := fsValue.Object()

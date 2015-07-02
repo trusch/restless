@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/robertkrimen/otto"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/util"
 	"io/ioutil"
@@ -14,7 +13,7 @@ import (
 	"../js"
 )
 
-func buildGetOneHandler(modelName string, jsEngine *otto.Otto) func(w http.ResponseWriter, r *http.Request) {
+func buildGetOneHandler(modelName string, jsEngine *js.JSEngine) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		id := vars["id"]
@@ -37,7 +36,7 @@ func buildGetOneHandler(modelName string, jsEngine *otto.Otto) func(w http.Respo
 	}
 }
 
-func buildPutOneHandler(modelName string, jsEngine *otto.Otto) func(w http.ResponseWriter, r *http.Request) {
+func buildPutOneHandler(modelName string, jsEngine *js.JSEngine) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		id := vars["id"]
@@ -63,7 +62,7 @@ func buildPutOneHandler(modelName string, jsEngine *otto.Otto) func(w http.Respo
 	}
 }
 
-func buildPostHandler(modelName string, jsEngine *otto.Otto) func(w http.ResponseWriter, r *http.Request) {
+func buildPostHandler(modelName string, jsEngine *js.JSEngine) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		data, err := ioutil.ReadAll(r.Body)
 		if err!=nil {
@@ -90,7 +89,7 @@ func buildPostHandler(modelName string, jsEngine *otto.Otto) func(w http.Respons
 	}
 }
 
-func buildDeleteOneHandler(modelName string, jsEngine *otto.Otto) func(w http.ResponseWriter, r *http.Request) {
+func buildDeleteOneHandler(modelName string, jsEngine *js.JSEngine) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		id := vars["id"]
@@ -143,7 +142,7 @@ func buildGetAllHandler(modelName string, db *leveldb.DB) func(w http.ResponseWr
 	}
 }
 
-func BuildEndpoint(route *mux.Route, modelName string, jsEngine *otto.Otto, db *leveldb.DB) {
+func BuildEndpoint(route *mux.Route, modelName string, jsEngine *js.JSEngine, db *leveldb.DB) {
 	router := route.Subrouter()
 	router.StrictSlash(true)
 	router.HandleFunc("/{id:.+}", buildGetOneHandler(modelName, jsEngine)).Methods("GET")

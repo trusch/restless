@@ -7,7 +7,6 @@
     "grunt": "*",
     "grunt-babel": "*",
     "grunt-contrib-concat": "^0.5.1",
-    "grunt-contrib-jshint": "*",
     "grunt-contrib-watch": "*",
     "grunt-shell": "*"
   }

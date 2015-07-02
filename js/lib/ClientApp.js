@@ -27,4 +27,4 @@ class ClientApp {
 
 }
 
-var app  = new ClientApp();
+var restless  = new ClientApp();
